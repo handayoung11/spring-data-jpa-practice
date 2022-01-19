@@ -1,0 +1,13 @@
+#intellij
+.idea
+HELP.md
+out/
+
+#gradle
+.gradle
+!gradle/wrapper/gradle-wrapper.jar
+build
+
+#JAVA
+*.jar
+*.class
