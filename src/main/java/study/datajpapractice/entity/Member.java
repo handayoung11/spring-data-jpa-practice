@@ -1,24 +1,34 @@
 package study.datajpapractice.entity;
 
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Data
 @Entity
 @Setter(AccessLevel.NONE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member {
+
     @Id @GeneratedValue
+    @Column(name = "member_id")
     private Long id;
     private String username;
+    private int age;
 
-    public Member(String username) {
+    @ToString.Exclude
+    @JoinColumn(name = "team_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Team team;
+
+    public Member(String username, int age, Team team) {
         this.username = username;
+        this.age = age;
+        if(team != null) changeTeam(team);
+    }
+
+    public void changeTeam(Team team) {
+        this.team = team;
+        team.getMembers().add(this);
     }
 }
