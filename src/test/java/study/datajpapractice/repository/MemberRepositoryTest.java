@@ -52,4 +52,18 @@ class MemberRepositoryTest {
         memberRepository.delete(member1);
         memberRepository.delete(member2);
     }
+
+    @Test
+    public void findByUsernameAndAgeGreaterThan() {
+        Member member1 = new Member("Test", 10, null);
+        Member member2 = new Member("Test", 20, null);
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+
+        List<Member> members = memberRepository.findByUsernameAndAgeGreaterThan("Test", 15);
+
+        assertThat(members.get(0).getUsername()).isEqualTo("Test");
+        assertThat(members.get(0).getAge()).isEqualTo(20);
+        assertThat(members.size()).isEqualTo(1);
+    }
 }
