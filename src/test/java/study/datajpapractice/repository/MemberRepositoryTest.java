@@ -5,7 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
+import study.datajpapractice.dto.MemberDTO;
 import study.datajpapractice.entity.Member;
+import study.datajpapractice.entity.Team;
 
 import java.util.List;
 
@@ -17,6 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class MemberRepositoryTest {
 
     @Autowired MemberRepository memberRepository;
+    @Autowired TeamRepository teamRepository;
 
     @Test
     public void testMember() {
@@ -101,4 +104,15 @@ class MemberRepositoryTest {
         assertThat(usernameList.contains("BBB")).isTrue();
     }
 
+    @Test
+    public void findMemberDTOList() {
+        Team team = new Team("프로그래밍부");
+        Member member = new Member("AAA", 10, team);
+
+        teamRepository.save(team);
+        memberRepository.save(member);
+
+        List<MemberDTO> members = memberRepository.findMemberDTOList();
+        assertThat(members.contains(new MemberDTO(member.getId(), member.getUsername(), team.getName()))).isTrue();
+    }
 }
