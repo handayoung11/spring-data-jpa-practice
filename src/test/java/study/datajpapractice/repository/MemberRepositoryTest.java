@@ -87,4 +87,18 @@ class MemberRepositoryTest {
         List<Member> members = memberRepository.findByNameAndAge("AAA", 10);
         assertThat(members.get(0)).isEqualTo(member1);
     }
+
+    @Test
+    public void findUsernameList() {
+        Member member1 = new Member("AAA", 10, null);
+        Member member2 = new Member("BBB", 20, null);
+
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+
+        List<String> usernameList = memberRepository.findUsernameList();
+        assertThat(usernameList.contains("AAA")).isTrue();
+        assertThat(usernameList.contains("BBB")).isTrue();
+    }
+
 }
