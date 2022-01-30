@@ -127,4 +127,17 @@ class MemberRepositoryTest {
         List<Member> members = memberRepository.findByNames(Arrays.asList("AAA", "BBB"));
         assertThat(members.contains(member1) && members.contains(member2)).isTrue();
     }
+
+    @Test
+    public void returnTypeTest() {
+        Member member1 = new Member("AAA", 10, null);
+        Member member2 = new Member("BBB", 10, null);
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+
+        List<Member> members = memberRepository.findListByUsername("AAA");
+        Member findMember1 = memberRepository.findMemberByUsername("AAA");
+        Member findMember2 = memberRepository.findOptionalByUsername("AAA").orElseThrow(NullPointerException::new);
+        assertThat(members.contains(findMember1) && members.contains(findMember2)).isTrue();
+    }
 }
