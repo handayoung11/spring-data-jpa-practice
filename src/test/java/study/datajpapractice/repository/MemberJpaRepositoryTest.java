@@ -9,7 +9,7 @@ import study.datajpapractice.entity.Member;
 
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @Transactional
 @Rollback(false)
@@ -76,5 +76,22 @@ class MemberJpaRepositoryTest {
 
         List<Member> members = memberJpaRepository.findByUsername("AAA");
         assertThat(members.get(0)).isEqualTo(member1);
+    }
+
+    @Test
+    public void pageByAge() {
+        int age = 10, offset = 0, limit = 3;
+
+        memberJpaRepository.save(new Member("member1", age, null));
+        memberJpaRepository.save(new Member("member2", age, null));
+        memberJpaRepository.save(new Member("member3", age, null));
+        memberJpaRepository.save(new Member("member4", age, null));
+        memberJpaRepository.save(new Member("member5", age, null));
+
+        List<Member> members = memberJpaRepository.pageByAge(age, offset, limit);
+        long count = memberJpaRepository.countByAge(age);
+
+        assertThat(members.size()).isEqualTo(limit);
+        assertThat(count >= 5).isTrue();
     }
 }
