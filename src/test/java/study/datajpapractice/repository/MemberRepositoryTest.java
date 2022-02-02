@@ -83,7 +83,7 @@ class MemberRepositoryTest {
         memberRepository.save(member2);
 
         List<Member> members = memberRepository.findByUsername("AAA");
-        assertThat(members.get(0)).isEqualTo(member1);
+        assertThat(members.contains(member1)).isTrue();
     }
 
     @Test
@@ -92,7 +92,7 @@ class MemberRepositoryTest {
         memberRepository.save(member1);
 
         List<Member> members = memberRepository.findByNameAndAge("AAA", 10);
-        assertThat(members.get(0)).isEqualTo(member1);
+        assertThat(members.contains(member1)).isTrue();
     }
 
     @Test
