@@ -3,6 +3,9 @@ package study.datajpapractice.repository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import study.datajpapractice.dto.MemberDTO;
@@ -139,5 +142,29 @@ class MemberRepositoryTest {
         Member findMember1 = memberRepository.findMemberByUsername("AAA");
         Member findMember2 = memberRepository.findOptionalByUsername("AAA").orElseThrow(NullPointerException::new);
         assertThat(members.contains(findMember1) && members.contains(findMember2)).isTrue();
+    }
+
+    @Test
+    public void findByAge() {
+        int age = 10, page = 0, size = 3;
+
+        memberRepository.save(new Member("member1", age, null));
+        memberRepository.save(new Member("member2", age, null));
+        memberRepository.save(new Member("member3", age, null));
+        memberRepository.save(new Member("member4", age, null));
+        memberRepository.save(new Member("member5", age, null));
+
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "username"));
+        Page<Member> pagedMembers = memberRepository.findByAge(age, pageRequest);
+        Page<MemberDTO> memberDTOPage = pagedMembers.map(m -> new MemberDTO(m.getId(), m.getUsername(), null));
+        Page<String> memberNamePage = pagedMembers.map(m -> m.getUsername());
+
+
+        assertThat(pagedMembers.getContent().size()).isEqualTo(size); // paging result
+        assertThat(pagedMembers.getTotalElements() >= 5).isTrue(); // total elements
+        assertThat(pagedMembers.getNumber()).isEqualTo(page); // page number
+        assertThat(pagedMembers.getTotalPages() >= 2).isTrue(); // total pages
+        assertThat(pagedMembers.isFirst()).isTrue();
+        assertThat(pagedMembers.hasNext()).isTrue();
     }
 }
