@@ -167,4 +167,19 @@ class MemberRepositoryTest {
         assertThat(pagedMembers.isFirst()).isTrue();
         assertThat(pagedMembers.hasNext()).isTrue();
     }
+
+    @Test
+    public void plusAgeOfAllMems() {
+        memberRepository.save(new Member("member1", 10, null));
+        memberRepository.save(new Member("member2", 20, null));
+        Member member3 = memberRepository.save(new Member("member3", 30, null));
+        memberRepository.save(new Member("member4", 40, null));
+        memberRepository.save(new Member("member5", 50, null));
+
+        int resultCount = memberRepository.plusAgeOfAllMems(30);
+        Member findMember = memberRepository.findById(member3.getId()).orElse(null);
+        assertThat(findMember.getAge()).isEqualTo(31);
+        assertThat(resultCount >= 3).isTrue();
+    }
+
 }
