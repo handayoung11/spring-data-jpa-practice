@@ -210,4 +210,30 @@ class MemberRepositoryTest {
                 .getTeam().getName())
                 .isEqualTo("teamB");
     }
+
+    @Test
+    public void findTeamByUsername() {
+        Team teamA = new Team("teamA");
+        Team teamB = new Team("teamB");
+        teamRepository.save(teamA);
+        teamRepository.save(teamB);
+
+        Member member1 = new Member("member1", 10, teamA);
+        Member member2 = new Member("member1", 20, teamB);
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+
+        memberRepository.flush();
+        em.clear();
+
+        List<Member> members = memberRepository.findTeamByUsername("member1");
+        assertThat(members.stream()
+                .filter(m -> m.getId() == member1.getId()).findFirst().orElse(null)
+                .getTeam().getName())
+                .isEqualTo("teamA");
+        assertThat(members.stream()
+                .filter(m -> m.getId() == member2.getId()).findFirst().orElse(null)
+                .getTeam().getName())
+                .isEqualTo("teamB");
+    }
 }
