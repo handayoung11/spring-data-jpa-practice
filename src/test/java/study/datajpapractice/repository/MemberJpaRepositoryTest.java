@@ -94,4 +94,16 @@ class MemberJpaRepositoryTest {
         assertThat(members.size()).isEqualTo(limit);
         assertThat(count >= 5).isTrue();
     }
+
+    @Test
+    public void plusAgeOfAllMems() {
+        memberJpaRepository.save(new Member("member1", 10, null));
+        memberJpaRepository.save(new Member("member2", 20, null));
+        memberJpaRepository.save(new Member("member3", 30, null));
+        memberJpaRepository.save(new Member("member4", 40, null));
+        memberJpaRepository.save(new Member("member5", 50, null));
+
+        int resultCount = memberJpaRepository.plusAgeOfAllMems(30);
+        assertThat(resultCount >= 3).isTrue();
+    }
 }
