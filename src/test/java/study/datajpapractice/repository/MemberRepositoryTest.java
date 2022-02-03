@@ -12,6 +12,8 @@ import study.datajpapractice.dto.MemberDTO;
 import study.datajpapractice.entity.Member;
 import study.datajpapractice.entity.Team;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.Arrays;
 import java.util.List;
 
@@ -24,6 +26,7 @@ class MemberRepositoryTest {
 
     @Autowired MemberRepository memberRepository;
     @Autowired TeamRepository teamRepository;
+    @PersistenceContext EntityManager em;
 
     @Test
     public void testMember() {
@@ -182,4 +185,29 @@ class MemberRepositoryTest {
         assertThat(resultCount >= 3).isTrue();
     }
 
+    @Test
+    public void fetchTeam() {
+        Team teamA = new Team("teamA");
+        Team teamB = new Team("teamB");
+        teamRepository.save(teamA);
+        teamRepository.save(teamB);
+
+        Member member1 = new Member("member1", 10, teamA);
+        Member member2 = new Member("member2", 20, teamB);
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+
+        memberRepository.flush();
+        em.clear();
+
+        List<Member> members = memberRepository.fetchTeam();
+        assertThat(members.stream()
+                .filter(m -> m.getId() == member1.getId()).findFirst().orElse(null)
+                .getTeam().getName())
+                .isEqualTo("teamA");
+        assertThat(members.stream()
+                .filter(m -> m.getId() == member2.getId()).findFirst().orElse(null)
+                .getTeam().getName())
+                .isEqualTo("teamB");
+    }
 }
