@@ -258,4 +258,12 @@ class MemberRepositoryTest {
 
         memberRepository.findLockById(member1.getId()).orElse(null);
     }
+
+    @Test
+    public void findMemberCustom() {
+        Member member = memberRepository.save(new Member("member1", 10, null));
+
+        List<Member> members = memberRepository.findMemberCustom();
+        assertThat(members.contains(member)).isTrue();
+    }
 }
