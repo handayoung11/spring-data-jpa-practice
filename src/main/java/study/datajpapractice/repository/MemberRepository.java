@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import study.datajpapractice.dto.MemberDTO;
 import study.datajpapractice.entity.Member;
 
+import javax.persistence.LockModeType;
 import javax.persistence.QueryHint;
 import java.util.List;
 import java.util.Optional;
@@ -48,4 +49,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     @QueryHints(@QueryHint(name = "org.hibernate.readonly", value = "true"))
     Optional<Member> findROById(Long id);
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    Optional<Member> findLockById(Long id);
 }

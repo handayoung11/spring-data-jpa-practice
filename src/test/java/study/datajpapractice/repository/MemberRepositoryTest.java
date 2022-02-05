@@ -248,4 +248,14 @@ class MemberRepositoryTest {
         findMember.updateUsername("member2");
         em.flush();
     }
+
+    @Test
+    public void findLockById() {
+        // Lock 기능은 심화기능. 추후 필요할 때 공부하도록 하자
+        Member member1 = memberRepository.save(new Member("member1", 10, null));
+        em.flush();
+        em.clear();
+
+        memberRepository.findLockById(member1.getId()).orElse(null);
+    }
 }
