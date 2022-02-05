@@ -2,14 +2,12 @@ package study.datajpapractice.repository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.EntityGraph;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
 import study.datajpapractice.dto.MemberDTO;
 import study.datajpapractice.entity.Member;
 
+import javax.persistence.QueryHint;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,4 +45,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     @EntityGraph("Members.all")
     List<Member> findTeamByUsername(@Param("username") String username);
+
+    @QueryHints(@QueryHint(name = "org.hibernate.readonly", value = "true"))
+    Optional<Member> findROById(Long id);
 }

@@ -236,4 +236,16 @@ class MemberRepositoryTest {
                 .getTeam().getName())
                 .isEqualTo("teamB");
     }
+
+    @Test
+    public void findRoById() {
+        Member member1 = new Member("member1", 10, null);
+        memberRepository.save(member1);
+        em.flush();
+        em.clear();
+
+        Member findMember = memberRepository.findROById(member1.getId()).orElse(null);
+        findMember.updateUsername("member2");
+        em.flush();
+    }
 }
