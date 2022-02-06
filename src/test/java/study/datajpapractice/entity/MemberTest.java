@@ -1,16 +1,17 @@
 package study.datajpapractice.entity;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
+import study.datajpapractice.repository.MemberRepository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @Rollback(false)
 @Transactional
@@ -18,6 +19,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class MemberTest {
     @PersistenceContext
     EntityManager em;
+    @Autowired
+    MemberRepository memberRepository;
 
     @Test
     public void testEntity() {
@@ -45,5 +48,33 @@ class MemberTest {
             System.out.println("member = " + member);
             System.out.println("-> member.team = " + member.getTeam());
         }
+    }
+
+    @Test
+    public void udpatedAndCreatedDateTest() {
+        Member member = new Member("member1", 10, null);
+        memberRepository.save(member);
+
+        member.updateUsername("member2");
+        em.flush();
+        em.clear();
+
+        Member findMember = memberRepository.findById(member.getId()).orElse(null);
+        assertThat(findMember.getCreatedDate()).isNotNull();
+        assertThat(findMember.getCreatedDate()).isEqualTo(member.getCreatedDate());
+        assertThat(findMember.getModifiedDate()).isAfter(findMember.getCreatedDate());
+    }
+
+    @Test
+    public void creatorAndModifierTest() {
+        Member member = new Member("member1", 10, null);
+        memberRepository.save(member);
+
+        em.flush();
+        em.clear();
+
+        Member findMember = memberRepository.findById(member.getId()).orElse(null);
+        assertThat(findMember.getCreatedBy()).isNotNull();
+        assertThat(findMember.getModifiedBy()).isEqualTo(member.getCreatedBy());
     }
 }
