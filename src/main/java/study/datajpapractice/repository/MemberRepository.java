@@ -60,4 +60,5 @@ public interface MemberRepository
 
     List<UsernameOnly> findUnByUsername(@Param("username") String username);
     List<MemberInfoDTO> findMemberInfoDTOByUsername(@Param("username") String username);
+    <T> List<T> findProjectionByUsername(@Param("username") String username, Class<T> type);
 }

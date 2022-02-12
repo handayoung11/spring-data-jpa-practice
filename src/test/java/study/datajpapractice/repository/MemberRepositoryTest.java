@@ -327,4 +327,15 @@ class MemberRepositoryTest {
         List<MemberInfoDTO> members = memberRepository.findMemberInfoDTOByUsername("m1");
         assertThat(members.get(0).getUsername()).isEqualTo("m1");
     }
+
+    @Test
+    public void findProjectionByUsernmae() {
+        Member m1 = new Member("m1", 10, null);
+        em.persist(m1);
+
+        List<MemberInfoDTO> members1 = memberRepository.findProjectionByUsername("m1", MemberInfoDTO.class);
+        List<UsernameOnly> members2 = memberRepository.findProjectionByUsername("m1", UsernameOnly.class);
+        assertThat(members1.get(0).getUsername()).isEqualTo("m1");
+        assertThat(members2.get(0).getUsername()).isEqualTo("m1");
+    }
 }
