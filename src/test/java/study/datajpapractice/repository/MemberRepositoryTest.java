@@ -7,6 +7,7 @@ import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
+import study.datajpapractice.dto.Mem$Team;
 import study.datajpapractice.dto.MemberDTO;
 import study.datajpapractice.dto.MemberInfoDTO;
 import study.datajpapractice.dto.UsernameOnly;
@@ -337,5 +338,19 @@ class MemberRepositoryTest {
         List<UsernameOnly> members2 = memberRepository.findProjectionByUsername("m1", UsernameOnly.class);
         assertThat(members1.get(0).getUsername()).isEqualTo("m1");
         assertThat(members2.get(0).getUsername()).isEqualTo("m1");
+    }
+
+    @Test
+    public void findProjectionWithAssociated() {
+        Team t1 = new Team("t1");
+        em.persist(t1);
+
+        Member m1 = new Member("m1", 10, t1);
+        em.persist(m1);
+
+        List<Mem$Team> members = memberRepository.findProjectionByUsername("m1", Mem$Team.class);
+        Mem$Team member = members.get(0);
+        assertThat(member.getUsername()).isEqualTo("m1");
+        assertThat(member.getTeam().getName()).isEqualTo("t1");
     }
 }
