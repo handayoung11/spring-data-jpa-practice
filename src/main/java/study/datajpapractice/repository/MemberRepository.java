@@ -55,4 +55,6 @@ public interface MemberRepository
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     Optional<Member> findLockById(Long id);
+
+    List<UsernameOnly> findUnByUsername(@Param("username") String username);
 }

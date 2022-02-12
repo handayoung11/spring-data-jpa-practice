@@ -8,6 +8,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import study.datajpapractice.dto.MemberDTO;
+import study.datajpapractice.dto.UsernameOnly;
 import study.datajpapractice.entity.Member;
 import study.datajpapractice.entity.Team;
 
@@ -306,5 +307,14 @@ class MemberRepositoryTest {
         List<Member> members = memberRepository.findAll(example);
 
         assertThat(members.stream().filter(m -> m.getId() == m1.getId()).count() == 1).isTrue();
+    }
+
+    @Test
+    public void findUsernameByUsername() {
+        Member m1 = new Member("m1", 10, null);
+        em.persist(m1);
+
+        List<UsernameOnly> members = memberRepository.findUnByUsername("m1");
+        assertThat(members.get(0).getUsername()).isEqualTo("m1");
     }
 }
