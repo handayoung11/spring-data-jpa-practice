@@ -3,9 +3,7 @@ package study.datajpapractice.repository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
@@ -284,5 +282,29 @@ class MemberRepositoryTest {
         Specification<Member> spec = MemberSpec.username("m1").and(MemberSpec.teamName("teamA"));
         List<Member> result = memberRepository.findAll(spec);
         assertThat(result.stream().map(Member::getId).collect(Collectors.toList()).contains(m1.getId())).isTrue();
+    }
+
+    @Test
+    public void queryByExample() {
+        Team teamA = new Team("teamA");
+        em.persist(teamA);
+
+        Member m1 = new Member("m1", 10, teamA);
+        em.persist(m1);
+        em.persist(new Member("m2", 10, teamA));
+        em.flush();
+        em.clear();
+
+        //Probe 생성
+        Team team = new Team("teamA");
+        Member member = new Member("m1", 0, team);
+
+        //ExampleMatcher 생성, age property 무시
+        ExampleMatcher matcher = ExampleMatcher.matching()
+                .withIgnorePaths("age");
+        Example<Member> example = Example.of(member, matcher);
+        List<Member> members = memberRepository.findAll(example);
+
+        assertThat(members.stream().filter(m -> m.getId() == m1.getId()).count() == 1).isTrue();
     }
 }
