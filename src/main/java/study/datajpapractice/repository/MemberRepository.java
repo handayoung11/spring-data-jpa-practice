@@ -5,6 +5,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
 import study.datajpapractice.dto.MemberDTO;
+import study.datajpapractice.dto.MemberInfoDTO;
+import study.datajpapractice.dto.UsernameOnly;
 import study.datajpapractice.entity.Member;
 
 import javax.persistence.LockModeType;
@@ -57,4 +59,5 @@ public interface MemberRepository
     Optional<Member> findLockById(Long id);
 
     List<UsernameOnly> findUnByUsername(@Param("username") String username);
+    List<MemberInfoDTO> findMemberInfoDTOByUsername(@Param("username") String username);
 }
