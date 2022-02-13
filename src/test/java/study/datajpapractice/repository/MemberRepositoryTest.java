@@ -7,10 +7,7 @@ import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
-import study.datajpapractice.dto.Mem$Team;
-import study.datajpapractice.dto.MemberDTO;
-import study.datajpapractice.dto.MemberInfoDTO;
-import study.datajpapractice.dto.UsernameOnly;
+import study.datajpapractice.dto.*;
 import study.datajpapractice.entity.Member;
 import study.datajpapractice.entity.Team;
 
@@ -352,5 +349,29 @@ class MemberRepositoryTest {
         Mem$Team member = members.get(0);
         assertThat(member.getUsername()).isEqualTo("m1");
         assertThat(member.getTeam().getName()).isEqualTo("t1");
+    }
+
+    @Test
+    public void pageProjectionWithNQuery() {
+        Member m1 = new Member("m1", 10, null);
+        Member m2 = new Member("m2", 10, null);
+        Member m3 = new Member("m3", 10, null);
+
+        em.persist(m1);
+        em.persist(m2);
+        em.persist(m3);
+
+        em.flush();
+        em.clear();
+
+        Page<Mem$TeamInfo> memberInfoDTOS = memberRepository.pageProjectionWithNQuery(PageRequest.of(0, 3));
+        List<Mem$TeamInfo> content = memberInfoDTOS.getContent();
+
+        for (Mem$TeamInfo mem : content) {
+            System.out.println(mem.getId());
+            System.out.println("mem = " + mem.getUsername());
+            System.out.println("mem = " + mem.getTeamName());
+        }
+        assertThat(memberInfoDTOS.getSize() == 3).isTrue();
     }
 }

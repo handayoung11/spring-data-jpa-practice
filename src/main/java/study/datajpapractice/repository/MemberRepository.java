@@ -4,9 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
-import study.datajpapractice.dto.MemberDTO;
-import study.datajpapractice.dto.MemberInfoDTO;
-import study.datajpapractice.dto.UsernameOnly;
+import study.datajpapractice.dto.*;
 import study.datajpapractice.entity.Member;
 
 import javax.persistence.LockModeType;
@@ -61,4 +59,10 @@ public interface MemberRepository
     List<UsernameOnly> findUnByUsername(@Param("username") String username);
     List<MemberInfoDTO> findMemberInfoDTOByUsername(@Param("username") String username);
     <T> List<T> findProjectionByUsername(@Param("username") String username, Class<T> type);
+
+    @Query(value = "select m.member_id as id, m.username, t.name as teamName " +
+            "from member m left outer join team t"
+            , countQuery = "select count(*) from member"
+            , nativeQuery = true)
+    Page<Mem$TeamInfo> pageProjectionWithNQuery(Pageable pageable);
 }
